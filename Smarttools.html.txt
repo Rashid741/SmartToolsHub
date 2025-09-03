@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Tools Hub</title>
+<style>
+body {margin:0;font-family:"Poppins",sans-serif;background:linear-gradient(135deg,#f7f9fc,#e9f5f2);color:#333;display:flex;}
+.sidebar{width:230px;background:#f1f5f9;padding:20px;height:100vh;position:fixed;box-shadow:2px 0 8px rgba(0,0,0,0.1);}
+.sidebar h2{color:#008080;margin-bottom:20px;text-align:center;}
+.sidebar button{width:100%;padding:10px;margin:5px 0;border:none;background:#00bfa5;color:white;font-size:16px;border-radius:8px;cursor:pointer;transition:0.3s;}
+.sidebar button:hover{background:#009e8c;}
+.content{margin-left:250px;padding:20px;flex:1;}
+.tool{display:none;background:white;padding:20px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.tool.active{display:block;}
+.result{margin-top:15px;font-weight:bold;color:#008080;}
+.action{padding:10px 20px;border:none;border-radius:8px;background:#00bfa5;color:white;cursor:pointer;margin-top:10px;}
+.action:hover{background:#009e8c;}
+img[id^="calcIcon"]{width:40px;display:none;margin-top:15px;}
+.rotate{display:inline-block;animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+input, select{margin:5px 0;padding:5px;}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+<h2>🛠️ Smart Tools</h2>
+<button onclick="showTool('home')">🏠 Home</button>
+<button onclick="showTool('age')">🎂 Age Calculator</button>
+<button onclick="showTool('bmi')">⚖️ BMI Calculator</button>
+<button onclick="showTool('gpa')">🎓 GPA Calculator</button>
+<button onclick="showTool('savings')">💰 Savings Calculator</button>
+<button onclick="showTool('insurance')">📑 Insurance Estimator</button>
+<button onclick="showTool('howto')">ℹ️ How to Use</button>
+</div>
+
+<div class="content">
+<div id="home" class="tool active">
+<h1>Welcome to Smart Tools Hub</h1>
+<p>Select a tool from the sidebar to get started!</p>
+</div>
+
+<div id="age" class="tool">
+<h2>🎂 Age Calculator</h2>
+<input type="date" id="dob">
+<button class="action" onclick="calculateAge()">Calculate Age</button>
+<p id="ageResult" class="result"></p>
+<img id="calcIconAge" src="https://img.icons8.com/fluency/48/calculator.png"/>
+</div>
+
+<div id="bmi" class="tool">
+<h2>⚖️ BMI Calculator</h2>
+<label>Height:</label><br>
+Feet <input type="number" id="feet" placeholder="Feet"> Inches <input type="number" id="inches" placeholder="Inches"><br>
+Or CM <input type="number" id="cm" placeholder="cm"><br>
+<label>Weight:</label><br>
+Kg <input type="number" id="kg" placeholder="Kg"> Pounds <input type="number" id="lbs" placeholder="Lbs"><br>
+<button class="action" onclick="calculateBMI()">Calculate BMI</button>
+<p id="bmiResult" class="result"></p>
+<img id="calcIconBMI" src="https://img.icons8.com/fluency/48/calculator.png"/>
+</div>
+
+<div id="gpa" class="tool">
+<h2>🎓 GPA & CGPA Calculator</h2>
+<div id="subjects"></div>
+<button class="action" onclick="addSubject()">➕ Add Subject</button><br>
+Previous CGPA <input type="number" step="0.01" id="prevCgpa" placeholder="0-4"> Credits <input type="number" id="prevCredits" placeholder="Completed Credit Hours"><br>
+<button class="action" onclick="calculateGPA()">Calculate GPA</button>
+<p id="gpaResult" class="result"></p>
+<img id="calcIconGPA" src="https://img.icons8.com/fluency/48/calculator.png"/>
+</div>
+
+<div id="savings" class="tool">
+<h2>💰 Savings Calculator</h2>
+<input type="number" id="principal" placeholder="Initial Amount"><br>
+<input type="number" id="monthly" placeholder="Monthly Saving"><br>
+<input type="number" id="rate" placeholder="Annual Interest Rate %"><br>
+<input type="number" id="years" placeholder="Years"><br>
+<button class="action" onclick="calculateSavings()">Calculate Savings</button>
+<p id="savingsResult" class="result"></p>
+<img id="calcIconSavings" src="https://img.icons8.com/fluency/48/calculator.png"/>
+</div>
+
+<div id="insurance" class="tool">
+<h2>📑 Insurance Estimator</h2>
+<input type="number" id="ageIns" placeholder="Age"><br>
+<select id="gender"><option>Male</option><option>Female</option></select><br>
+<select id="smoker"><option>Non-Smoker</option><option>Smoker</option></select><br>
+<input type="number" id="coverage" placeholder="Coverage Amount"><br>
+<select id="policy"><option>Life Insurance</option><option>Health Insurance</option><option>Car Insurance</option></select><br>
+<button class="action" onclick="calculateInsurance()">Estimate Insurance</button>
+<p id="insuranceResult" class="result"></p>
+<img id="calcIconInsurance" src="https://img.icons8.com/fluency/48/calculator.png"/>
+</div>
+
+<div id="howto" class="tool">
+<h2>ℹ️ How to Use</h2>
+<ul>
+<li>🎂 Age → Enter DOB → Click Calculate</li>
+<li>⚖️ BMI → Enter height & weight → Click Calculate</li>
+<li>🎓 GPA → Add subjects, grades & credits → See GPA + CGPA</li>
+<li>💰 Savings → Enter initial, monthly, rate & years → Click Calculate</li>
+<li>📑 Insurance → Fill age, gender, smoker & coverage → Click Estimate</li>
+</ul>
+</div>
+</div>
+
+<script>
+// Sidebar navigation
+function showTool(toolId){document.querySelectorAll(".tool").forEach(t=>t.classList.remove("active"));document.getElementById(toolId).classList.add("active");}
+
+// Animate calculator icon
+function animateCalc(id){let icon=document.getElementById(id);icon.style.display="inline-block";icon.classList.add("rotate");setTimeout(()=>{icon.style.display="none";icon.classList.remove("rotate");},1500);}
+
+// Age Calculator
+function calculateAge(){const dob=document.getElementById("dob").value;if(!dob)return;const today=new Date();const birth=new Date(dob);let years=today.getFullYear()-birth.getFullYear();let months=today.getMonth()-birth.getMonth();let days=today.getDate()-birth.getDate();if(days<0){months--;days+=30;}if(months<0){years--;months+=12;}document.getElementById("ageResult").innerText=`You are ${years} years, ${months} months, ${days} days old.`;animateCalc("calcIconAge");}
+
+// BMI
+function calculateBMI(){let height=0;if(document.getElementById("cm").value){height=parseFloat(document.getElementById("cm").value)/100;}else{let feet=parseInt(document.getElementById("feet").value)||0;let inches=parseInt(document.getElementById("inches").value)||0;height=((feet*12)+inches)*0.0254;}let weight=parseFloat(document.getElementById("kg").value)||(parseFloat(document.getElementById("lbs").value)*0.4536)||0;if(!height||!weight)return;let bmi=(weight/(height*height)).toFixed(2);document.getElementById("bmiResult").innerText=`Your BMI is ${bmi}`;animateCalc("calcIconBMI");}
+
+// GPA
+const gradePoints={"A":4.0,"A-":3.7,"B+":3.3,"B":3.0,"B-":2.7,"C+":2.3,"C":2.0,"C-":1.7,"D":1.0,"F":0.0};
+function addSubject(){const div=document.createElement("div");div.innerHTML=`<select class="grade"><option value="">Grade</option><option>A</option><option>A-</option><option>B+</option><option>B</option><option>B-</option><option>C+</option><option>C</option><option>C-</option><option>D</option><option>F</option></select> <input type="number" placeholder="Credits" class="credits"> <button onclick="this.parentElement.remove()">❌</button>`;document.getElementById("subjects").appendChild(div);}
+function calculateGPA(){const grades=[...document.querySelectorAll(".grade")];const credits=[...document.querySelectorAll(".credits")].map(c=>parseInt(c.value)||0);let totalPoints=0,totalCredits=0;grades.forEach((g,i)=>{if(g.value&&credits[i]>0){totalPoints+=gradePoints[g.value]*credits[i];totalCredits+=credits[i];}});if(totalCredits===0)return;const semGPA=(totalPoints/totalCredits).toFixed(2);const prevCgpa=parseFloat(document.getElementById("prevCgpa").value)||0;const prevCredits=parseInt(document.getElementById("prevCredits").value)||0;let newCgpa=semGPA;if(prevCgpa>0&&prevCredits>0){const totalQuality=(prevCgpa*prevCredits)+(semGPA*totalCredits);const totalAll=prevCredits+totalCredits;newCgpa=(totalQuality/totalAll).toFixed(2);}let emoji=semGPA<2.5?" 😢":" ❤️";document.getElementById("gpaResult").innerHTML=`Semester GPA: ${semGPA}${emoji}<br>Updated CGPA: ${newCgpa}`;animateCalc("calcIconGPA");}
+
+// Savings
+function calculateSavings(){let p=parseFloat(document.getElementById("principal").value)||0;let m=parseFloat(document.getElementById("monthly").value)||0;let r=(parseFloat(document.getElementById("rate").value)||0)/100/12;let t=(parseFloat(document.getElementById("years").value)||0)*12;let future=(p*Math.pow(1+r,t))+m*((Math.pow(1+r,t)-1)/r);document.getElementById("savingsResult").innerText="Future Savings: "+future.toFixed(2);animateCalc("calcIconSavings");}
+
+// Insurance
+function calculateInsurance(){let age=parseInt(document.getElementById("ageIns").value)||30;let smoker=document.getElementById("smoker").value;let coverage=parseInt(document.getElementById("coverage").value)||100000;let factor=smoker==="Smoker"?1.5:1;let premium=(coverage/1000)*age*0.5*factor;document.getElementById("insuranceResult").innerText="Estimated Premium: $"+premium.toFixed(2)+" per year";animateCalc("calcIconInsurance");}
+
+</script>
+</body>
+</html>
